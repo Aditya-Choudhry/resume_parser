@@ -5,7 +5,7 @@ from docx import Document
 import re
 import os
 from openai import OpenAI
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # Load environment variables
 
 # Load API key from .env file
 load_dotenv()
@@ -33,12 +33,6 @@ def extract_info(text):
     email = email[0] if email else "Not Found"
     name = text.split('\n')[0].strip()  # Assume first line is the name
     return name, email
-
-# Function to calculate manual ATS score (Basic Skill Matching)
-def calculate_ats_score(text, required_skills):
-    matched_skills = [skill for skill in required_skills if skill.lower() in text.lower()]
-    score = (len(matched_skills) / len(required_skills)) * 100 if required_skills else 0
-    return score, matched_skills
 
 # Function to get ATS score using AI
 def get_ats_score_with_ai(text, required_skills):
@@ -106,29 +100,15 @@ def main():
         required_skills = [skill.strip() for skill in required_skills.split(",")] if required_skills else []
 
         if required_skills:
-            # Calculate and display manual ATS score
-            score, matched_skills = calculate_ats_score(text, required_skills)
-            st.write("### Initial ATS Score (Manual Matching)")
-            st.write(f"**ATS Score:** {score:.2f}%")
+            # Get AI-calculated ATS score
+            st.write("### AI-Powered ATS Score Analysis")
+            ats_analysis = get_ats_score_with_ai(text, required_skills)
+            st.write(ats_analysis)
 
-            # Display Skill Matching
-            st.write("### Skill Matching (Manual)")
-            for skill in required_skills:
-                if skill.lower() in text.lower():
-                    st.write(f"✅ {skill}")
-                else:
-                    st.write(f"❌ {skill}")
-
-            # Button to analyze with AI
-            if st.button("Analyze with AI"):
-                st.write("### AI-Powered ATS Score Analysis")
-                ats_analysis = get_ats_score_with_ai(text, required_skills)
-                st.write(ats_analysis)
-
-                # Get AI resume improvement suggestions
-                st.write("### Resume Improvement Suggestions")
-                suggestions = get_resume_suggestions(text, required_skills)
-                st.write(suggestions)
+            # Get AI resume improvement suggestions
+            st.write("### Resume Improvement Suggestions")
+            suggestions = get_resume_suggestions(text, required_skills)
+            st.write(suggestions)
 
 # Run the app
 if __name__ == "__main__":
