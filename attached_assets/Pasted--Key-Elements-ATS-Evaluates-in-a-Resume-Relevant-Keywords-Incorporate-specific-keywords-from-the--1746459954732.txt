@@ -1,0 +1,70 @@
+🧩 Key Elements ATS Evaluates in a Resume
+Relevant Keywords
+
+Incorporate specific keywords from the job description, including skills, qualifications, and job titles.
+
+Use both full terms and common abbreviations (e.g., "Search Engine Optimization" and "SEO").
+
+Place these keywords naturally within your resume's content.
+
+Clear Section Headings
+
+Use standard headings like "Work Experience," "Education," "Skills," and "Certifications."
+
+Avoid creative or unconventional headings that might confuse the ATS.
+Novorésumé
+
+Simple Formatting
+
+Use a clean, straightforward layout without graphics, tables, or columns.
+
+Stick to standard fonts like Arial, Calibri, or Times New Roman.
+
+Avoid using headers, footers, or text boxes, as ATS may not read content within them.
+
+Appropriate File Type
+
+Submit your resume in a format compatible with ATS, such as .docx or .pdf (if specified).
+
+Avoid using image-based formats like .jpg or .png.
+
+Chronological Order
+
+List your work experience in reverse chronological order, starting with the most recent position.
+
+Include employment dates and ensure consistency in formatting.
+A Portland Career
++1
+ONU
++1
+
+Quantifiable Achievements
+
+Highlight accomplishments with measurable results (e.g., "Increased sales by 20%").
+
+Use bullet points to present achievements clearly and concisely.
+
+Education and Certifications
+
+Include details of your educational background, degrees earned, and relevant certifications.
+
+Specify the institution names and dates of completion.
+
+Contact Information
+
+Provide your full name, phone number, email address, and LinkedIn profile (if applicable).
+
+Ensure this information is placed at the top of your resume for easy visibility.
+
+Tailored Content
+
+Customize your resume for each job application by aligning your experience and skills with the job requirements.
+
+Avoid using a generic resume for multiple applications.
+
+Avoidance of Unreadable Elements
+
+Refrain from using special characters, emojis, or complex formatting that ATS might not interpret correctly.
+
+Ensure all text is selectable and not embedded within images.
+
