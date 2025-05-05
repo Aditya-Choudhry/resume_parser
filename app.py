@@ -38,7 +38,7 @@ def extract_info(text):
 # Function to get ATS score using AI
 def get_ats_score_with_ai(text, required_skills):
     prompt = f"""
-    Evaluate the ATS compatibility of the following resume based on the given required skills.
+    Evaluate the ATS compatibility of the following resume based on these key criteria:
 
     Resume Text:
     {text}
@@ -46,9 +46,39 @@ def get_ats_score_with_ai(text, required_skills):
     Required Skills:
     {', '.join(required_skills)}
 
+    Analyze and score based on:
+    1. Keywords Optimization (20%):
+       - Presence of job-specific keywords
+       - Natural keyword placement
+       - Use of both full terms and abbreviations
+
+    2. Format & Structure (20%):
+       - Clear section headings
+       - Simple formatting
+       - Proper chronological order
+       - No complex elements (tables, graphics)
+
+    3. Content Quality (30%):
+       - Quantifiable achievements
+       - Relevant work experience
+       - Education and certifications
+       - Skills alignment
+
+    4. Technical Compatibility (15%):
+       - Text parsing quality
+       - No special characters issues
+       - Clean formatting
+
+    5. Contact Information (15%):
+       - Completeness
+       - Professional presentation
+       - Proper placement
+
     Provide:
-    1. A percentage-based ATS Score (0-100%).
-    2. A short explanation of why this score was given.
+    1. Overall ATS Score (0-100%)
+    2. Individual category scores
+    3. Specific improvements needed
+    4. Keywords found vs missing
     """
 
     try:
