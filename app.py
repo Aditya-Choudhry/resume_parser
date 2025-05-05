@@ -139,7 +139,37 @@ def analyze_resume_sections(text, required_skills):
         return f"Failed to analyze sections. Error: {e}"
 
 def main():
+    # Custom CSS
+    st.markdown("""
+        <style>
+        .main {
+            padding: 2rem;
+        }
+        .stButton > button {
+            width: 100%;
+            border-radius: 5px;
+            height: 3em;
+            background-color: #0066cc;
+            color: white;
+        }
+        .upload-box {
+            border: 2px dashed #0066cc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-box {
+            background-color: #f0f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
     st.title("Resume Parser and ATS Score Analyzer")
+    st.markdown("---")
 
     # Job Description Input
     st.subheader("Job Description")
@@ -154,8 +184,16 @@ def main():
     if manual_job_description:
         job_description = manual_job_description
 
-    # Upload Resume
-    uploaded_file = st.file_uploader("Upload Resume (PDF or DOCX)", type=["pdf", "docx"])
+    # Two-column layout
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+            <div class='upload-box'>
+                <h3>📄 Upload Resume</h3>
+            </div>
+        """, unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Upload Resume (PDF or DOCX)", type=["pdf", "docx"])
 
     if uploaded_file and job_description:
         # Extract text from the uploaded file
@@ -197,9 +235,15 @@ def main():
         # Skills Gap Analysis
         st.write("### Skills Gap Analysis")
         if st.button("Analyze Skills Gap"):
-            from skills_analyzer import analyze_skills_gap
-            gap_analysis = analyze_skills_gap(text, required_skills, client)
-            st.write(gap_analysis)
+            with st.spinner("Analyzing skills gap..."):
+                from skills_analyzer import analyze_skills_gap
+                gap_analysis = analyze_skills_gap(text, required_skills, client)
+                st.success("Analysis complete!")
+                st.markdown(f"""
+                    <div class='score-box'>
+                        {gap_analysis}
+                    </div>
+                """, unsafe_allow_html=True)
 
         # Generate Cover Letter
         st.write("### Cover Letter Generator")
