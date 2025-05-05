@@ -9,3 +9,5 @@ python-docx
 python-dotenv
 streamlit
 docx
+beautifulsoup4
+requests
