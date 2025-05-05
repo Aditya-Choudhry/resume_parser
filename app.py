@@ -1,11 +1,12 @@
-# Import necessary libraries
 import streamlit as st
 import pdfplumber
 from docx import Document
 import re
 import os
 from openai import OpenAI
-from dotenv import load_dotenv  # Load environment variables
+from dotenv import load_dotenv
+from job_scraper import scrape_job_description
+from cover_letter import generate_cover_letter
 
 # Load API key from .env file
 load_dotenv()
@@ -76,14 +77,57 @@ def get_resume_suggestions(text, required_skills):
     except Exception as e:
         return f"Failed to get suggestions. Error: {e}"
 
-# Streamlit App
+def analyze_resume_sections(text, required_skills):
+    prompt = f"""
+    Analyze the following resume sections and provide a score (0-100) for each major section:
+
+    Resume Text:
+    {text}
+
+    Required Skills:
+    {', '.join(required_skills)}
+
+    Analyze and score:
+    1. Professional Summary/Objective
+    2. Work Experience
+    3. Skills & Technologies
+    4. Education
+    5. Projects (if any)
+
+    For each section, provide:
+    - Score
+    - Specific improvements needed
+    """
+
+    try:
+        completion = client.chat.completions.create(
+            model="deepseek/deepseek-r1-distill-llama-70b:free",
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"Failed to analyze sections. Error: {e}"
+
 def main():
     st.title("Resume Parser and ATS Score Analyzer")
+
+    # Job Description Input
+    st.subheader("Job Description")
+    job_url = st.text_input("Enter Job Posting URL (optional):")
+    job_description = ""
+
+    if job_url:
+        job_description = scrape_job_description(job_url)
+        st.text_area("Scraped Job Description", job_description, height=200)
+
+    manual_job_description = st.text_area("Or Paste Job Description:", height=200)
+    if manual_job_description:
+        job_description = manual_job_description
 
     # Upload Resume
     uploaded_file = st.file_uploader("Upload Resume (PDF or DOCX)", type=["pdf", "docx"])
 
-    if uploaded_file:
+    if uploaded_file and job_description:
         # Extract text from the uploaded file
         text = extract_text_from_pdf(uploaded_file) if uploaded_file.name.endswith('.pdf') else extract_text_from_docx(uploaded_file)
 
@@ -95,21 +139,44 @@ def main():
         st.write(f"**Name:** {name}")
         st.write(f"**Email:** {email}")
 
-        # Input Required Skills
-        required_skills = st.text_input("Enter Required Skills (comma separated):")
-        required_skills = [skill.strip() for skill in required_skills.split(",")] if required_skills else []
+        # Extract skills from job description
+        skills_prompt = f"Extract key required skills from this job description: {job_description}"
+        completion = client.chat.completions.create(
+            model="deepseek/deepseek-r1-distill-llama-70b:free",
+            messages=[{"role": "user", "content": skills_prompt}],
+        )
+        required_skills = completion.choices[0].message.content.split(',')
+        st.write("### Extracted Required Skills")
+        st.write(required_skills)
 
-        if required_skills:
-            # Get AI-calculated ATS score
-            st.write("### AI-Powered ATS Score Analysis")
-            ats_analysis = get_ats_score_with_ai(text, required_skills)
-            st.write(ats_analysis)
+        # Section Analysis
+        st.write("### Resume Section Analysis")
+        section_analysis = analyze_resume_sections(text, required_skills)
+        st.write(section_analysis)
 
-            # Get AI resume improvement suggestions
-            st.write("### Resume Improvement Suggestions")
-            suggestions = get_resume_suggestions(text, required_skills)
-            st.write(suggestions)
+        # ATS Score
+        st.write("### Overall ATS Score Analysis")
+        ats_analysis = get_ats_score_with_ai(text, required_skills)
+        st.write(ats_analysis)
 
-# Run the app
+        # Improvement Suggestions
+        st.write("### Resume Improvement Suggestions")
+        suggestions = get_resume_suggestions(text, required_skills)
+        st.write(suggestions)
+
+        # Generate Cover Letter
+        st.write("### Cover Letter Generator")
+        if st.button("Generate Cover Letter"):
+            cover_letter = generate_cover_letter(name, required_skills, job_description)
+            st.text_area("Generated Cover Letter", cover_letter, height=400)
+
+            # Download button for cover letter
+            st.download_button(
+                label="Download Cover Letter",
+                data=cover_letter,
+                file_name="cover_letter.txt",
+                mime="text/plain"
+            )
+
 if __name__ == "__main__":
     main()
