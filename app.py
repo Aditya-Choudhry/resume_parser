@@ -194,6 +194,13 @@ def main():
         suggestions = get_resume_suggestions(text, required_skills)
         st.write(suggestions)
 
+        # Skills Gap Analysis
+        st.write("### Skills Gap Analysis")
+        if st.button("Analyze Skills Gap"):
+            from skills_analyzer import analyze_skills_gap
+            gap_analysis = analyze_skills_gap(text, required_skills, client)
+            st.write(gap_analysis)
+
         # Generate Cover Letter
         st.write("### Cover Letter Generator")
         if st.button("Generate Cover Letter"):
